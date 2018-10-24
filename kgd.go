@@ -1,10 +1,11 @@
 package kgd
+
 import (
 	"testing"
 	"fmt"
 	"math"
 	"strings"
-	"reflect"
+	//"reflect"
 )
 
 func ToBinaryString64(v interface{}) (string){
@@ -14,112 +15,143 @@ func ToBinaryString64(v interface{}) (string){
 	s=strings.Replace(s," ","",-1)
 	return s
 }
-func Test0001(t *testing.T) {
-	//var X=[]float64{1,2,3,4,5,6,7,8}
-	s := ToBinaryString64(uint64(866))
-	fmt.Println(s,len(s))
-	for n,x :=range s{
+//
+func GetKLfloat64(v interface{}) []float64{
+	s:=ToBinaryString64(v)
+	var kl=[]float64{}
+	for _,x :=range s{
 		if x=='1'{
-			fmt.Println("find 1 in %d",n+1)
-			fmt.Println(n,x,reflect.TypeOf(x),reflect.ValueOf(x))
+			kl=append(kl,1)
+		}else{
+			kl=append(kl,-1)
 		}
 	}
-	fmt.Println(s,s[63])
-	//kgd(X)
+	return kl
+}
+//n 的最大值建议在20以内，以免内存泄露。
+func GetKLofNK(n float64,k float64) []float64{
+	kl:= GetKLfloat64(uint64(k))
+	//fmt.Println(n,k,kl[64-int(n):])
+	return kl[64-int(n):]
+	//for i:=1;i<int(k)-1;i++{
+		//kl:= GetKLfloat64(uint64(i))
+		//fmt.Println(kl,len(kl),kl[64-int(n):])
+		//KN=append(KN,kl[])
+	//}
+    //return KN
+}
+func Test0001(t *testing.T) {
+	var X=[]float64{1,2,3,4,5,6,7,8}
+   // var kkl=GetKLofN(2.00,4)
+	//fmt.Println(len(kkl))
+    //fmt.Println(kkl)
+	kgd(X)
 }
 type CodeMap struct{
 	n int //n元可公度
 	k int //n元可公度的运算编码[1,2^n-1]
 	data []float64  //原始序列数据
-	code []float64
+	code [][]float64
 	avg float64
 	kgd bool
 	next float64
-	percent float64
+	percent []float64
 }
-func (cm CodeMap) calculate(){
+func (cm *CodeMap) calculate(n float64,k float64){
 	var (
 		length = len(cm.data)
 	    code = []float64{}
-	    i=0
+	    //i=0
 	    max = 0.00
-	    sum=0.00
-	    N=0.00
+	    min = 0.00
+
+	    //N=0.00
 	)
-	if cm.n<2 ||cm.n>16 || cm.n>length-2{
+	if n<2 ||n>16 || n>float64(length-2){
 		return
 	}
-	s:=ToBinaryString64(uint64(cm.n))
-	fmt.Println(s)
-    s= strings.Replace(s,"[","",-1)
-    s=strings.Replace(s,"]","",-1)
-    s=strings.Replace(s," ","",-1)
-    fmt.Println(s)
-	for true{
-		N=0.00
-		for a,k :=range s[64-cm.n:]{
-				if k=='0'{
-					N -=cm.data[i+a]
-				}else{
-					N +=cm.data[i+a]
-				}
+
+   // kl:=GetKLfloat64(uint64(cm.n))   //编码数组
+    //k:=math.Pow(2,float64(cm.n))
+    //cm.k=int(k)
+	for  i:=1;i<int(k)-1;i++{
+		kl:=GetKLofNK(float64(n),float64(i))
+		fmt.Println(len(kl),kl)
+		sum:=0.00
+		code=[]float64{}
+        for j:=0;float64(j)<float64(length)-n-1;j++{
+        	N:=0.00
+			for a,k :=range kl {
+				N += k*cm.data[int(j)+int(a)]
+				//fmt.Println(N)
+			}
+			code=append(code,N)
+			if max < N { max = N }
+			if min > N { min = N}
+			sum +=N
 		}
-		i++
-		sum +=N
-		if max<N{max = N}
-		code = append(code,N)
-		if i>length{
-			break
+		cm.code =append(cm.code,code)
+		fmt.Println(code)
+		var(
+		    avg =float64(float64(sum)/float64(len(code)))
+		    percentmax = (1- (math.Abs(max)-math.Abs(avg))/math.Abs(avg))*100
+			percentmin = (1- (math.Abs(avg)-math.Abs(min))/math.Abs(avg))*100
+		)
+		fmt.Println(sum,len(cm.code),avg,percentmax,percentmin)
+		if percentmax>99&&percentmin>99{
+			cm.kgd=true
 		}
-	}
-	cm.code=code
-	avg:=sum/float64(len(code))
-	cm.avg = avg
-	cm.percent = (max-avg)/avg*100
-	if (max-avg)/avg >(1-0.618){
-		cm.kgd=false
-	}else{
-		cm.kgd=true
-	}
-	var (
-		knext=-1.00
-		NN=0.00
-	)
-	for a,k :=range s[64-cm.n:]{
-		if a==cm.n{
-			if k =='0'{
+		cm.percent=[]float64{percentmax,percentmin}
+		cm.avg=avg
+		if cm.kgd{
+			var (
 				knext=-1.00
-			}else{
-				knext=1.00
+				NN=0.00
+			)
+			for a,k :=range GetKLofNK(float64(cm.n),float64(i)){
+				if a==cm.n{
+					knext=k
+				}else {
+					NN += k*cm.data[length-cm.n+a]
+				}
 			}
-		}else {
-			if k == '0' {
-				NN -= cm.data[length-cm.n+a+1]
-			} else {
-				NN += cm.data[length-cm.n+a+1]
-			}
+			cm.next = (avg-NN)/knext
+		}else{
+			cm.next=0.00
 		}
 	}
-    cm.next = (avg-NN)/knext
+
+		//kl:= GetKLfloat64(uint64(i))
+		//fmt.Println(kl,len(kl),kl[64-int(n):])
+		//KN=append(KN,kl[])
+		//}
+		//return KN
+
+
+
 }
 //n=2~16
 func kgd(X []float64) {
 	var(
 		length = len(X)
-		codemap=CodeMap{}
 	)
-	for _,d:=range X{
-		codemap.data= append(codemap.data,d)
-	}
 
+    //fmt.Println(codemap.data)
 	for n:=2;n<length-2 && n<16;n++{
-		for k:=0;k< int(math.Pow(float64(2),float64(n)));k++ {
+		for k:=1;k< int(math.Pow(float64(2),float64(n)))-1; {
+			var codemap = new(CodeMap)
+			for _,d:=range X{
+				codemap.data= append(codemap.data,d)
+			}
+			fmt.Println(n,k)
 			codemap.n=n
 			codemap.k = k
-			codemap.calculate()
+			//fmt.Println(codemap.n,codemap.k)
+			codemap.calculate(float64(n),float64(k))
 			if codemap.kgd {
 				fmt.Println(codemap.next,codemap.percent)
 			}
+			k++
 		}
 	}
 }
