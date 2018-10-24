@@ -1,4 +1,4 @@
-package gongdu
+package kgd
 //string 中的0对应-1,1对应1.
 func GetKByString(s string) []int{
     var r=[]int
