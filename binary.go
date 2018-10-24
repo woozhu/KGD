@@ -1,3 +1,5 @@
+//可公度
+package kgd
 import "regexp"
 
 // ByteToBinaryString get the string in binary format of a byte or uint8.
