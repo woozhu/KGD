@@ -1,3 +1,4 @@
+package kgd
 import "encoding/binary"
 
 // ToBinaryString get string in binary format according to input data.
