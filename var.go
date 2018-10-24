@@ -1,3 +1,4 @@
+package kgd
 import "errors"
 
 const (
