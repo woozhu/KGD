@@ -15,8 +15,8 @@ func ToBinaryString64(v interface{}) (string){
 	s=strings.Replace(s," ","",-1)
 	return s
 }
-//
-func GetKLfloat64(v interface{}) []float64{
+//把0变-1，1变1
+func GetSubPlusList(v interface{}) []float64{
 	s:=ToBinaryString64(v)
 	var kl=[]float64{}
 	for _,x :=range s{
@@ -28,9 +28,23 @@ func GetKLfloat64(v interface{}) []float64{
 	}
 	return kl
 }
+
+//得到一个0到0，1到1的list
+func GetZeroOneList(v interface{}) []float64{
+    s:=ToBinaryString64{}
+    var kl=[]float64{}
+    for _,x := range s{
+        if x==‘1’{
+            kl=append(kl,1)
+        }else{
+            kl=append(kl,0)
+        }
+    }
+    return kl
+}
 //n 的最大值建议在20以内，以免内存泄露。
 func GetKLofNK(n float64,k float64) []float64{
-	kl:= GetKLfloat64(uint64(k))
+	kl:= GetSubPlusList(uint64(k))
 	//fmt.Println(n,k,kl[64-int(n):])
 	return kl[64-int(n):]
 	//for i:=1;i<int(k)-1;i++{
@@ -39,6 +53,12 @@ func GetKLofNK(n float64,k float64) []float64{
 		//KN=append(KN,kl[])
 	//}
     //return KN
+}
+//
+func GetSubPlusResult(n,k float64,v []float64)float64{
+    sp:=GetSubPlusList(uint64(k))
+    nsp:=sp[64-int(n):]
+    for i,k:=range nsp
 }
 func Test0001(t *testing.T) {
 	var X=[]float64{1,2,3,4,5,6,7,8}
