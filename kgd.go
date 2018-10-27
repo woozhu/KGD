@@ -31,7 +31,7 @@ func GetSubPlusList(v interface{}) []float64{
 
 //得到一个0到0，1到1的list
 func GetZeroOneList(v interface{}) []float64{
-    s:=ToBinaryString64{}
+    s:=ToBinaryString64(v)
     var kl=[]float64{}
     for _,x := range s{
         if x==‘1’{
