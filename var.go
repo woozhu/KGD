@@ -11,8 +11,9 @@ const (
 
 //二进制位数
 const (
-    bit_num=64.00
+    bits_num = int(64)
 )
+//
 var uint8arr [8]uint8
 
 // ErrBadStringFormat represents a error of input string's format is illegal .
