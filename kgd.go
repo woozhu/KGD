@@ -54,11 +54,18 @@ func GetKLofNK(n float64,k float64) []float64{
 	//}
     //return KN
 }
-//
+//n元，那么k中有n个1。
 func GetSubPlusResult(n,k float64,v []float64)float64{
-    sp:=GetSubPlusList(uint64(k))
-    nsp:=sp[64-int(n):]
-    for i,k:=range nsp
+    var (
+        length=len(v)
+        sp =GetSubPlusList(uint64(k))
+        nsp=sp[64-int(n):]
+     )
+    for i:=0;i<length-int(n)+1;i +=int(n){
+        for j,k:=range nsp{
+            v[i+j]*k
+        ｝
+    }
 }
 func Test0001(t *testing.T) {
 	var X=[]float64{1,2,3,4,5,6,7,8}
