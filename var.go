@@ -11,7 +11,10 @@ const (
 
 //二进制位数
 const (
-    bits_num = int(64)
+    //二进制编码位数
+    binary_length = int(64)
+    //二进制编码开始 2元可公度公式
+    binary_start = int(2)
 )
 //
 var uint8arr [8]uint8
