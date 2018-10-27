@@ -49,21 +49,29 @@ func GetOneNum(v interface{}) float64{
     return num
 }
 //过滤编码
-func BinaryCode(n int,c int) []float64{
-    r,f:= math.modf(math.log2(float64(c)))
-    r1,f1:=math.modf(math.log2(float64(c+1)))
+//n次元，数据长度l，n次元的数据组合
+func BinaryCode(n,l int,c int,data []float64)[][]float64{
+    var (
+        result=[][]float64{}
+        length=len(data)
+   
+    )
+    for c:= 2;c<math.pow2(length)-2;c++{
+        r,f:=math.modf(math.log2(float64(c)))
+        r1,f1:=math.modf(math.log2(float64(c+1)))
     //把2的n次方和2的n次方-1过滤掉
-    if f==float64(0)||f1==float64(0){
-    return
-    }
+        if f==float64(0)||f1==float64(0){
+            return
+        }
     //把kl变短
-    kl:=GetZeroOneList(uint64(c))
-    kl= kl[binary_length-n:]
+        kl:=GetZeroOneList(uint64(c))
+        kl= kl[binary_length-length:]
     //如果kl中的1为n个，返回kl，否则过滤掉
-    if GetOneNum(uint64(c))==float64(n){
-    return kl
+        if GetOneNum(uint64(c))==float64(n){
+           result=append(result,kl)
+        }
     }
-    return
+    return result
 }
 //n 的最大值建议在20以内，以免内存泄露。
 func GetKLofNK(n float64,k float64) []float64{
