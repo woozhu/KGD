@@ -28,7 +28,7 @@ func GetSubPlusList(v interface{}) []float64{
  
 //得到一个0到0，1到1的list
 func GetZeroOneList(v interface{}) []float64{
-    s:=ToBinaryString64{}
+    s:=ToBinaryString64(v)
     var kl=[]float64{}
     for _,x := range s{
         if x==‘1’{
@@ -47,6 +47,23 @@ func GetOneNum(v interface{}) float64{
         num+=k
     }
     return num
+}
+//过滤编码
+func BinaryCode(n int,c int) []float64{
+    r,f:= math.modf(math.log2(float64(c)))
+    r1,f1:=math.modf(math.log2(float64(c+1)))
+    //把2的n次方和2的n次方-1过滤掉
+    if f==float64(0)||f1==float64(0){
+    return
+    }
+    //把kl变短
+    kl:=GetZeroOneList(uint64(c))
+    kl= kl[binary_length-n:]
+    //如果kl中的1为n个，返回kl，否则过滤掉
+    if GetOneNum(uint64(c))==float64(n){
+    return kl
+    }
+    return
 }
 //n 的最大值建议在20以内，以免内存泄露。
 func GetKLofNK(n float64,k float64) []float64{
