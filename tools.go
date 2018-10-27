@@ -50,7 +50,7 @@ func GetOneNum(v interface{}) float64{
 }
 //过滤编码
 //n次元，数据长度l，n次元的数据组合
-func BinaryCode(n,l int,c int,data []float64)[][]float64{
+func BinaryCode(n int,data []float64)[][]float64{
     var (
         result=[][]float64{}
         length=len(data)
