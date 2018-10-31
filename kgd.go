@@ -54,7 +54,26 @@ func GetKLofNK(n float64,k float64) []float64{
 	//}
     //return KN
 }
+var e=0.001
+var a=0.618
 //n元，那么k中有n个1。
+func TwoYuanKGD(data []float64) (float64,float64){
+    var (
+        T= 1.00
+        length=len(data)
+        kgd= []float64{}
+    )
+    for i,k:=range data{
+        for j,d:= range data{
+            if j<=i{return}
+            if math.Abs(data[j]-data[i])<e { 
+                kgd= append(kgd,j-i)
+            }
+        }
+        
+    }
+    
+}
 func GetSubPlusResult(n,k float64,v []float64)float64{
     var (
         length=len(v)
