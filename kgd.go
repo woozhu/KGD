@@ -1,4 +1,5 @@
 package kgd
+/*
 “””
 二元
 三元
@@ -12,6 +13,7 @@ package kgd
 十一元
 十二元
 “””
+*/
 import (
 	"testing"
 	"fmt"
